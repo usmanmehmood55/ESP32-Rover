@@ -1,0 +1,8 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP ESDA6V8AV5
+D Transient Voltage Suppressor ±8KV IEC61000-4-2 3A IEC61000-4-5
+F https://datasheet.lcsc.com/szlcsc/Will-Semicon-ESDA6V8AV5_C268741.pdf
+$ENDCMP
+#
+#End Doc Library

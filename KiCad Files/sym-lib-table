@@ -1,0 +1,8 @@
+(sym_lib_table
+  (lib (name Driver_Motor)(type Legacy)(uri ${KIPRJMOD}/Driver_Motor.lib)(options "")(descr ""))
+  (lib (name TPS5450)(type Legacy)(uri ${KIPRJMOD}/TPS5450.lib)(options "")(descr ""))
+  (lib (name LSF0204)(type Legacy)(uri ${KIPRJMOD}/LSF0204.lib)(options "")(descr ""))
+  (lib (name LT8364)(type Legacy)(uri ${KIPRJMOD}/LT8364.lib)(options "")(descr ""))
+  (lib (name PL37D)(type Legacy)(uri ${KIPRJMOD}/PL37D.lib)(options "")(descr ""))
+  (lib (name ESDA6V8AV5)(type Legacy)(uri ${KIPRJMOD}/ESDA6V8AV5.lib)(options "")(descr ""))
+)

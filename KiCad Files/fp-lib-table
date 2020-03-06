@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name TPS5450)(type Legacy)(uri ${KIPRJMOD}/TPS5450.mod)(options "")(descr ""))
+  (lib (name "AU Logo")(type KiCad)(uri "${KIPRJMOD}/AU Logo.pretty")(options "")(descr ""))
+)

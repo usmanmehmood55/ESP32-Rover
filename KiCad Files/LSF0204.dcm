@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP LSF0204
+D Bidirectional voltage level translator, 0.8 V to 4.5 V  (Vref_A), 1.8 V to 5.5 V (Vref_B)
+K translator
+F http://www.ti.com/lit/ds/symlink/lsf0204.pdf
+$ENDCMP
+#
+#End Doc Library

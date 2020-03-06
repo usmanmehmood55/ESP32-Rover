@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP PL37D
+D Pololu 37D Encoder Motor
+K Encoder Motor
+F https://www.pololu.com/file/0J1706/pololu-37d-metal-gearmotors.pdf
+$ENDCMP
+#
+#End Doc Library
