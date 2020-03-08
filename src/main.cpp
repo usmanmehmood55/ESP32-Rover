@@ -99,7 +99,6 @@ void loop()
   Serial.print(M2.getDistance());
 }
 
-// Use if ISR inside DRV8840.h does not run
 void IRAM_ATTR encoderRead1()
 {
   M1.encoderRead();
