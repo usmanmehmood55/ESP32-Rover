@@ -108,3 +108,8 @@ void IRAM_ATTR encoderRead2()
 {
   M2.encoderRead();
 }
+
+int getCoordinates()
+{
+  //put relation between the two enocder readings and xy coordinates
+}
