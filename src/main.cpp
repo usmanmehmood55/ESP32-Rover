@@ -112,5 +112,5 @@ void IRAM_ATTR encoderRead2()
 
 int getCoordinates()
 {
-  //put relation between the two enocder readings and xy coordinates
+  
 }

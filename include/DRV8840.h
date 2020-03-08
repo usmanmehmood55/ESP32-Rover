@@ -34,6 +34,7 @@ private:
         _PWM_PIN, _PHASE_PIN, _DECAY_PIN, _PWMchannel,
         _SLEEP_PIN, _RST_PIN, _ENC1_PIN, _ENC2_PIN;
     int _DISTANCE = 0;
+    int _count = 0;
 };
 
 DRV8840::DRV8840(
@@ -86,16 +87,14 @@ void DRV8840::encoderRead()
     if ( digitalRead(_ENC1_PIN) == digitalRead(_ENC2_PIN) )
     {
         state = !state;
-        //count++;
-        _DISTANCE++;
+        _count++;
     }
     else 
     {
         state = !state;
-        //count--;
-        _DISTANCE--; // Remove this when there is a relation b/w count and dist
+        _count--;
     }
-    //_DISTANCE = _DISTANCE + count;
+    _DISTANCE = _DISTANCE + ( _count * 15);
 }
 
 void DRV8840::getData()
