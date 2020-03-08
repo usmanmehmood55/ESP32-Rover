@@ -52,6 +52,7 @@ int distance2 = 0;
 
 void encoderRead1();
 void encoderRead2();
+int getCoordinates();
 
 void setup()
 {
