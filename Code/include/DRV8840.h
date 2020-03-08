@@ -2,6 +2,7 @@
   DRV8840.h - Library for DRV8840 Brushed DC motor driver.
   Created by Usman Mehmood, March 3, 2020.
   Created for use in FYP: 3D Mapping using Stereo Vision.
+  Only has definition of DRV8840 object. Functions are in DRV8840.cpp.
 */
 
 #ifndef DRV8840_h
@@ -14,7 +15,6 @@ class DRV8840
 public:
     DRV8840(
         unsigned const char PWM_PIN,
-        unsigned const char PWMchannel,
         unsigned const char PHASE_PIN,
         unsigned const char DECAY_PIN,
         unsigned const char SLEEP_PIN,
@@ -25,20 +25,17 @@ public:
     void motorForward(unsigned char PWM_DUTY);
     void motorBackward(unsigned char PWM_DUTY);
     void motorStop();
-    void encoderRead();
-    void getData();
-    int getDistance();
+    int encoderRead();
 
 private:
     unsigned char 
-        _PWM_PIN, _PHASE_PIN, _DECAY_PIN, _PWMchannel,
+        _PWM_PIN, _PHASE_PIN, _DECAY_PIN,
         _SLEEP_PIN, _RST_PIN, _ENC1_PIN, _ENC2_PIN;
-    int _DISTANCE;
+    int DISTANCE1, DISTANCE2;
 };
 
 DRV8840::DRV8840(
     unsigned const char PWM_PIN,
-    unsigned const char PWMchannel,
     unsigned const char PHASE_PIN,
     unsigned const char DECAY_PIN,
     unsigned const char SLEEP_PIN,
@@ -47,7 +44,6 @@ DRV8840::DRV8840(
     unsigned const char ENC2_PIN)
 {
     pinMode(PWM_PIN, OUTPUT); _PWM_PIN = PWM_PIN;
-    _PWMchannel = PWMchannel;
     pinMode(PHASE_PIN, OUTPUT); _PHASE_PIN = PHASE_PIN;
     pinMode(DECAY_PIN, OUTPUT); _DECAY_PIN = DECAY_PIN;
     pinMode(SLEEP_PIN, OUTPUT); _SLEEP_PIN = SLEEP_PIN;
@@ -61,7 +57,7 @@ void DRV8840::motorBackward(unsigned char PWM_DUTY)
     digitalWrite(_RST_PIN, HIGH);
     digitalWrite(_SLEEP_PIN, HIGH);
     digitalWrite(_PHASE_PIN, HIGH);
-    ledcWrite(_PWMchannel, PWM_DUTY);
+    ledcWrite(_PWM_PIN, PWM_DUTY);
 }
 
 void DRV8840::motorForward(unsigned char PWM_DUTY)
@@ -69,7 +65,7 @@ void DRV8840::motorForward(unsigned char PWM_DUTY)
     digitalWrite(_RST_PIN, HIGH);
     digitalWrite(_SLEEP_PIN, HIGH);
     digitalWrite(_PHASE_PIN, LOW);
-    ledcWrite(_PWMchannel, PWM_DUTY);
+    ledcWrite(_PWM_PIN, PWM_DUTY);
 }
 
 void DRV8840::motorStop()
@@ -79,7 +75,7 @@ void DRV8840::motorStop()
     digitalWrite(_DECAY_PIN, LOW);
 }
 
-void DRV8840::encoderRead()
+int DRV8840::encoderRead()
 {
     bool state = 0;
     int count = 0;
@@ -88,32 +84,13 @@ void DRV8840::encoderRead()
         state = !state;
         count++;
     }
-    else 
+    else
     {
         state = !state;
         count--;
     }
-    _DISTANCE = count * 0.1;
-}
-
-void DRV8840::getData()
-{
-    Serial.println();
-    Serial.print("PWM  Pch  Pha  Dec  Slp  Rst  EC1  EC3");
-    Serial.println();
-    Serial.print(_PWM_PIN); Serial.print("    ");
-    Serial.print(_PWMchannel); Serial.print("    ");
-    Serial.print(_PHASE_PIN); Serial.print("    ");
-    Serial.print(_DECAY_PIN); Serial.print("    ");
-    Serial.print(_SLEEP_PIN); Serial.print("    ");
-    Serial.print(_RST_PIN); Serial.print("    ");
-    Serial.print(_ENC1_PIN); Serial.print("   ");
-    Serial.print(_ENC2_PIN);
-}
-
-int DRV8840::getDistance()
-{
-    return _DISTANCE;
+    // Insert relation between distance and count, return distance instead of count
+    return count;
 }
 
 #endif
