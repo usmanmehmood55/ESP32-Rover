@@ -95,6 +95,7 @@ void setup()
 
 void loop()
 {
+  // put this in a function
   if (!client.connected())
   {
     reconnect();
@@ -105,29 +106,7 @@ void loop()
   if (now - lastMsg > 5000)
   {
     lastMsg = now;
-  }
-
-
-  Serial.println();
-  if (M1.getDistance() <= 5000)
-  {
-    M1.motorForward(255);
-  }
-  else
-  {
-    M1.motorStop();
-  }
-  Serial.print("  ");
-  if (M2.getDistance() <= 5000)
-  {
-    M2.motorForward(255);
-  }
-  else
-  {
-    M2.motorStop();
-  }
-  Serial.print(M1.getDistance());
-  Serial.print(M2.getDistance());
+  } 
 }
 
 
@@ -183,13 +162,29 @@ void callback(char *topic, byte *message, unsigned int length)
   if (String(topic) == "test")
   {
     Serial.print("Changing output to ");
-    if (messageTemp == "on")
+    if (messageTemp == "11")
     {
-      Serial.println("on");
+      Serial.print("Forward");
+      M1.motorForward(255);
+      M2.motorForward(255);
     }
-    else if (messageTemp == "off")
+    else if (messageTemp == "10")
     {
-      Serial.println("off");
+      Serial.print("Right");
+      M1.motorForward(0);
+      M2.motorForward(255);
+    }
+    else if (messageTemp == "01")
+    {
+      Serial.print("Left");
+      M1.motorForward(255);
+      M2.motorForward(0);
+    }
+    else
+    {
+      Serial.print("Stop");
+      M1.motorStop();
+      M2.motorStop();
     }
   }
 }
