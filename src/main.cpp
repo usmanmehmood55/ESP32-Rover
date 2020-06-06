@@ -122,7 +122,7 @@ void IRAM_ATTR encoderRead2()
 
 int getCoordinates()
 {
-  int dist = M1.getDistance() * 0.3;
+  int dist = M1.getDistance() * 0.5;
   return dist;
 }
 
@@ -229,6 +229,7 @@ void motorBehaviour(String MV_CMD, int DST_CMD)
       Serial.println(getCoordinates());
     }
     M1.motorStop(); M2.motorStop();
+    Serial.println(getCoordinates());
   }
   else if (MV_CMD == "BCK")
   {
