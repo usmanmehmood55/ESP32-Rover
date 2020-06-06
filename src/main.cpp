@@ -67,6 +67,7 @@ int getCoordinates();
 void setup_wifi();
 void callback(char *topic, byte *message, unsigned int length);
 void reconnect();
+void motorBehaviour(String MV_CMD, int DST_CMD);
 
 void setup()
 {
@@ -157,56 +158,35 @@ void callback(char *topic, byte *message, unsigned int length)
   }
  */
 
-  // put the following in an IF statement to make sure the length is correct
-  String direction = "0";
-  unsigned char speed1 = 0;
-  unsigned char speed2 = 0;
-
-  // 1      0       1       0       255     255     1000    1000
-  // M1 EN, M1 DR,  M2 EN,  M2 DR,  M1 SP,  M2 SP,  M1 DS,  M2 DS
-  // 18 characters
-  
-  for (int i = 0; i < 2; i++)
+  if (String(topic) == "ESP_CMD" && length == 10)
   {
-    Serial.print((char)message[i]);
-    direction += (char)message[i];
-  }
+    char cmd[10] = {0};
 
-  for (int i = 2; i < 5; i++)
-  {
-    Serial.print((char)message[i]);
-    direction += (char)message[i];
-  }
+    /*
+      Incoming message is a movement command and movement distance.
+      First the robot will rotate, then it will translate
+      in case of rotation, the distance will be in form of angle
+      FWD, BCK, LFT, RIT
+      movement command is 3 characters and distance command has 7 characters
+    */
 
-  Serial.println();
+    String MV_CMD = "0";
+    for (int i = 0; i < 3; i++)
+    {
+      Serial.print((char)message[i]);
+      MV_CMD += (char)message[i];
+    }
 
-  if (String(topic) == "test")
-  {
-    Serial.print("Changing output to ");
-    if (direction == "11")
+    int DST_CMD = 0;
+    for (int i = 3; i < 10; i++)
     {
-      Serial.print("Forward");
-      M1.motorForward(255);
-      M2.motorForward(255);
+      Serial.print(" ");
+      Serial.print((char)message[i]);
+      DST_CMD += (char)message[i];
     }
-    else if (direction == "10")
-    {
-      Serial.print("Right");
-      M1.motorForward(0);
-      M2.motorForward(255);
-    }
-    else if (direction == "01")
-    {
-      Serial.print("Left");
-      M1.motorForward(255);
-      M2.motorForward(0);
-    }
-    else
-    {
-      Serial.print("Stop");
-      M1.motorStop();
-      M2.motorStop();
-    }
+
+    motorBehaviour(MV_CMD,  DST_CMD);
+    Serial.println();
   }
 }
 
@@ -220,7 +200,7 @@ void reconnect() // Loop runs until reconnected to MQTT broker
     {
       Serial.println("connected");
       // Subscribe
-      client.subscribe("test");
+      client.subscribe("ESP_CMD");
     }
     else
     {
@@ -228,6 +208,18 @@ void reconnect() // Loop runs until reconnected to MQTT broker
       Serial.print(client.state());
       Serial.println(" try again in 5 seconds");
       delay(5000); // Wait 5 seconds before retrying
+    }
+  }
+}
+
+void motorBehaviour(String MV_CMD, int DST_CMD)
+{
+  if (MV_CMD == "FWD")
+  {
+    while (getCoordinates() < DST_CMD)
+    {
+      M1.motorForward(255);
+      M2.motorForward(255);
     }
   }
 }
