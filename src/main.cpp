@@ -31,7 +31,7 @@ unsigned const char ENCODER_2A = 34;
 unsigned const char ENCODER_2B = 35;
 unsigned const char M1FAULT = 05;
 unsigned const char M2FAULT = 25;
-// 
+//
 // PWM
 unsigned const char PWMchannel_0 = 0;
 unsigned const char PWMchannel_1 = 1;
@@ -106,7 +106,7 @@ void loop()
   if (now - lastMsg > 5000)
   {
     lastMsg = now;
-  } 
+  }
 }
 
 void IRAM_ATTR encoderRead1() // Use if ISR inside DRV8840.h does not run
@@ -121,7 +121,6 @@ void IRAM_ATTR encoderRead2()
 
 int getCoordinates()
 {
-  
 }
 
 void setup_wifi()
@@ -148,31 +147,55 @@ void callback(char *topic, byte *message, unsigned int length)
   Serial.print("Message arrived on topic: ");
   Serial.print(topic);
   Serial.print(". Message: ");
-  String messageTemp;
 
+  /*
+  String messageTemp;
   for (int i = 0; i < length; i++)
   {
     Serial.print((char)message[i]);
     messageTemp += (char)message[i];
   }
+ */
+
+  // put the following in an IF statement to make sure the length is correct
+  String direction = "0";
+  unsigned char speed1 = 0;
+  unsigned char speed2 = 0;
+
+  // 1      0       1       0       255     255     1000    1000
+  // M1 EN, M1 DR,  M2 EN,  M2 DR,  M1 SP,  M2 SP,  M1 DS,  M2 DS
+  // 18 characters
+  
+  for (int i = 0; i < 2; i++)
+  {
+    Serial.print((char)message[i]);
+    direction += (char)message[i];
+  }
+
+  for (int i = 2; i < 5; i++)
+  {
+    Serial.print((char)message[i]);
+    direction += (char)message[i];
+  }
+
   Serial.println();
 
   if (String(topic) == "test")
   {
     Serial.print("Changing output to ");
-    if (messageTemp == "11")
+    if (direction == "11")
     {
       Serial.print("Forward");
       M1.motorForward(255);
       M2.motorForward(255);
     }
-    else if (messageTemp == "10")
+    else if (direction == "10")
     {
       Serial.print("Right");
       M1.motorForward(0);
       M2.motorForward(255);
     }
-    else if (messageTemp == "01")
+    else if (direction == "01")
     {
       Serial.print("Left");
       M1.motorForward(255);
