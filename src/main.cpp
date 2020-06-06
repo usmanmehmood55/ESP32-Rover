@@ -31,7 +31,7 @@ unsigned const char ENCODER_2A = 34;
 unsigned const char ENCODER_2B = 35;
 unsigned const char M1FAULT = 05;
 unsigned const char M2FAULT = 25;
-//
+
 // PWM
 unsigned const char PWMchannel_0 = 0;
 unsigned const char PWMchannel_1 = 1;
@@ -122,6 +122,7 @@ void IRAM_ATTR encoderRead2()
 
 int getCoordinates()
 {
+  return M1.getDistance();
 }
 
 void setup_wifi()
@@ -160,17 +161,15 @@ void callback(char *topic, byte *message, unsigned int length)
 
   if (String(topic) == "ESP_CMD" && length == 10)
   {
-    char cmd[10] = {0};
-
     /*
       Incoming message is a movement command and movement distance.
       First the robot will rotate, then it will translate
       in case of rotation, the distance will be in form of angle
-      FWD, BCK, LFT, RIT
+      FWD, BCK, LFT, RIT, STP
       movement command is 3 characters and distance command has 7 characters
     */
 
-    String MV_CMD = "0";
+    String MV_CMD;
     for (int i = 0; i < 3; i++)
     {
       Serial.print((char)message[i]);
@@ -185,8 +184,12 @@ void callback(char *topic, byte *message, unsigned int length)
       DST_CMD += (char)message[i];
     }
 
-    motorBehaviour(MV_CMD,  DST_CMD);
     Serial.println();
+    Serial.print("MV = "); Serial.print(MV_CMD);
+    Serial.print("   DST = "); Serial.print(DST_CMD);
+    delay (1000);
+    Serial.println();
+    motorBehaviour(MV_CMD, DST_CMD);
   }
 }
 
@@ -216,10 +219,45 @@ void motorBehaviour(String MV_CMD, int DST_CMD)
 {
   if (MV_CMD == "FWD")
   {
+    Serial.print("Forward");
     while (getCoordinates() < DST_CMD)
     {
       M1.motorForward(255);
       M2.motorForward(255);
     }
   }
+  else if (MV_CMD == "BCK")
+  {
+    Serial.print("Backward");
+    while (getCoordinates() + DST_CMD > DST_CMD)
+    {
+      M1.motorBackward(255);
+      M2.motorBackward(255);
+    }
+  }
+  else if (MV_CMD == "RIT")
+  {
+    Serial.print("Right");
+    while (getCoordinates() > DST_CMD)
+    {
+      M1.motorForward(255);
+      M2.motorBackward(100);
+    }
+  }
+  else if (MV_CMD == "LFT")
+  {
+    Serial.print("Left");
+    while (getCoordinates() > DST_CMD)
+    {
+      M1.motorBackward(255);
+      M2.motorForward(255);
+    }
+  }
+  else
+  {
+    Serial.print("Stop");
+    M1.motorStop();
+    M2.motorStop();
+  }
+  Serial.println();
 }
