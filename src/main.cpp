@@ -109,8 +109,6 @@ void loop()
   } 
 }
 
-
-
 void IRAM_ATTR encoderRead1() // Use if ISR inside DRV8840.h does not run
 {
   M1.encoderRead();
