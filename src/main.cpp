@@ -122,7 +122,8 @@ void IRAM_ATTR encoderRead2()
 
 int getCoordinates()
 {
-  return M1.getDistance();
+  int dist = M1.getDistance() * 0.3;
+  return dist;
 }
 
 void setup_wifi()
@@ -176,13 +177,14 @@ void callback(char *topic, byte *message, unsigned int length)
       MV_CMD += (char)message[i];
     }
 
-    int DST_CMD = 0;
+    int DST_CMD = 0; String DST_string;
     for (int i = 3; i < 10; i++)
     {
       Serial.print(" ");
       Serial.print((char)message[i]);
-      DST_CMD += (char)message[i];
+      DST_string += (char)message[i]; // MUST be appended as a string
     }
+    DST_CMD = DST_string.toInt(); // converts string to int
 
     Serial.println();
     Serial.print("MV = "); Serial.print(MV_CMD);
@@ -224,7 +226,9 @@ void motorBehaviour(String MV_CMD, int DST_CMD)
     {
       M1.motorForward(255);
       M2.motorForward(255);
+      Serial.println(getCoordinates());
     }
+    M1.motorStop(); M2.motorStop();
   }
   else if (MV_CMD == "BCK")
   {
@@ -234,6 +238,7 @@ void motorBehaviour(String MV_CMD, int DST_CMD)
       M1.motorBackward(255);
       M2.motorBackward(255);
     }
+    M1.motorStop(); M2.motorStop();
   }
   else if (MV_CMD == "RIT")
   {
@@ -241,8 +246,9 @@ void motorBehaviour(String MV_CMD, int DST_CMD)
     while (getCoordinates() > DST_CMD)
     {
       M1.motorForward(255);
-      M2.motorBackward(100);
+      M2.motorBackward(255);
     }
+    M1.motorStop(); M2.motorStop();
   }
   else if (MV_CMD == "LFT")
   {
@@ -252,6 +258,7 @@ void motorBehaviour(String MV_CMD, int DST_CMD)
       M1.motorBackward(255);
       M2.motorForward(255);
     }
+    M1.motorStop(); M2.motorStop();
   }
   else
   {
