@@ -3,8 +3,8 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-const char *ssid = "Imran 2";
-const char *password = "9272imran";
+const char *ssid = "WiFi Name";
+const char *password = "WiFi Password";
 const char *mqtt_server = "192.168.100.93";
 
 WiFiClient espClient;
