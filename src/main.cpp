@@ -132,6 +132,7 @@ int getCoordinates()
   {
     delta_dist_M1 = 0;
     delta_dist_M2 = 0;
+    delta_theta = 0;
   }
   else
   {
