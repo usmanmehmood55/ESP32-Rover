@@ -30,8 +30,9 @@ public:
     int getDistance();
 
 private:
-    unsigned char 
-        _PWM_PIN, _PHASE_PIN, _DECAY_PIN, _PWMchannel,
+    unsigned char
+        _PWM_PIN,
+        _PHASE_PIN, _DECAY_PIN, _PWMchannel,
         _SLEEP_PIN, _RST_PIN, _ENC1_PIN, _ENC2_PIN;
     int _DISTANCE = 0;
     int _count = 0;
@@ -47,14 +48,21 @@ DRV8840::DRV8840(
     unsigned const char ENC1_PIN,
     unsigned const char ENC2_PIN)
 {
-    pinMode(PWM_PIN, OUTPUT); _PWM_PIN = PWM_PIN;
+    pinMode(PWM_PIN, OUTPUT);
+    _PWM_PIN = PWM_PIN;
     _PWMchannel = PWMchannel;
-    pinMode(PHASE_PIN, OUTPUT); _PHASE_PIN = PHASE_PIN;
-    pinMode(DECAY_PIN, OUTPUT); _DECAY_PIN = DECAY_PIN;
-    pinMode(SLEEP_PIN, OUTPUT); _SLEEP_PIN = SLEEP_PIN;
-    pinMode(RST_PIN, OUTPUT); _RST_PIN = RST_PIN;
-    pinMode(ENC1_PIN, INPUT); _ENC1_PIN = ENC1_PIN;
-    pinMode(ENC2_PIN, INPUT); _ENC2_PIN = ENC2_PIN;
+    pinMode(PHASE_PIN, OUTPUT);
+    _PHASE_PIN = PHASE_PIN;
+    pinMode(DECAY_PIN, OUTPUT);
+    _DECAY_PIN = DECAY_PIN;
+    pinMode(SLEEP_PIN, OUTPUT);
+    _SLEEP_PIN = SLEEP_PIN;
+    pinMode(RST_PIN, OUTPUT);
+    _RST_PIN = RST_PIN;
+    pinMode(ENC1_PIN, INPUT);
+    _ENC1_PIN = ENC1_PIN;
+    pinMode(ENC2_PIN, INPUT);
+    _ENC2_PIN = ENC2_PIN;
 }
 
 void DRV8840::motorBackward(unsigned char PWM_DUTY)
@@ -84,17 +92,18 @@ void DRV8840::encoderRead()
 {
     bool state = 0;
     //int count = 0;
-    if ( digitalRead(_ENC1_PIN) == digitalRead(_ENC2_PIN) )
+    if (digitalRead(_ENC1_PIN) == digitalRead(_ENC2_PIN))
     {
         state = !state;
         _count++;
     }
-    else 
+    else
     {
         state = !state;
         _count--;
     }
-    _DISTANCE = _DISTANCE + ( _count * 15);
+    //_DISTANCE = _DISTANCE + ( _count * 15);
+    _DISTANCE = _DISTANCE + _count;
 }
 
 void DRV8840::getData()
@@ -102,13 +111,20 @@ void DRV8840::getData()
     Serial.println();
     Serial.print("PWM  Pch  Pha  Dec  Slp  Rst  EC1  EC3");
     Serial.println();
-    Serial.print(_PWM_PIN); Serial.print("    ");
-    Serial.print(_PWMchannel); Serial.print("    ");
-    Serial.print(_PHASE_PIN); Serial.print("    ");
-    Serial.print(_DECAY_PIN); Serial.print("    ");
-    Serial.print(_SLEEP_PIN); Serial.print("    ");
-    Serial.print(_RST_PIN); Serial.print("    ");
-    Serial.print(_ENC1_PIN); Serial.print("   ");
+    Serial.print(_PWM_PIN);
+    Serial.print("    ");
+    Serial.print(_PWMchannel);
+    Serial.print("    ");
+    Serial.print(_PHASE_PIN);
+    Serial.print("    ");
+    Serial.print(_DECAY_PIN);
+    Serial.print("    ");
+    Serial.print(_SLEEP_PIN);
+    Serial.print("    ");
+    Serial.print(_RST_PIN);
+    Serial.print("    ");
+    Serial.print(_ENC1_PIN);
+    Serial.print("   ");
     Serial.print(_ENC2_PIN);
 }
 

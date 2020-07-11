@@ -8,7 +8,7 @@ has been written and included.
 MQTT added on June 5th. Receives 10-character commands from Nvidia Jetson TX2 
 to operate motors and return distance traveled
 
-Still working on distance calculations
+Still working on distance calculations, had *some* progress with it, which is included in the latest commit
 
 Contains main cpp file in src folder and DRV8840.h in include folder
 

@@ -58,8 +58,12 @@ DRV8840 M2(
     ENCODER_2A,
     ENCODER_2B);
 
-int distance1 = 0;
-int distance2 = 0;
+// global variables for odometry
+int delta_dist_M1 = 0;             // change in distance for M1
+int delta_dist_M2 = 0;             // change in distance for M1
+int delta_theta = 0;               // change in theta of robot
+int delta_dist = 0;                // change in distance of robot
+unsigned const char baseline = 22; // baseline of tyres
 
 void encoderRead1();
 void encoderRead2();
@@ -122,16 +126,18 @@ void IRAM_ATTR encoderRead2()
 
 int getCoordinates()
 {
-  int deltadistM1 = M1.getDistance();
-  int deltadistM2 = M1.getDistance();
-  if (deltadistM1 >= 0.1)
+  int delta_dist_M1 = M1.getDistance();
+  int delta_dist_M2 = M2.getDistance();
+  if (delta_dist_M1 >= 100)
   {
-    deltadistM1 = 0; deltadistM2 = 0;
-  } else
-  {
-    // not gonna work, deltadistM1 is not global so we need a global variable. 
+    delta_dist_M1 = 0;
+    delta_dist_M2 = 0;
   }
-  
+  else
+  {
+    delta_theta = (delta_dist_M1 - delta_dist_M1) / baseline;
+    delta_dist = delta_theta * baseline / 2;
+  }
 }
 
 void setup_wifi()
@@ -176,7 +182,8 @@ void callback(char *topic, byte *message, unsigned int length)
       MV_CMD += (char)message[i];
     }
 
-    int DST_CMD = 0; String DST_string;
+    int DST_CMD = 0;
+    String DST_string;
     for (int i = 3; i < 10; i++)
     {
       Serial.print(" ");
@@ -186,9 +193,11 @@ void callback(char *topic, byte *message, unsigned int length)
     DST_CMD = DST_string.toInt(); // converts string to int
 
     Serial.println();
-    Serial.print("MV = "); Serial.print(MV_CMD);
-    Serial.print("   DST = "); Serial.print(DST_CMD);
-    delay (1000);
+    Serial.print("MV = ");
+    Serial.print(MV_CMD);
+    Serial.print("   DST = ");
+    Serial.print(DST_CMD);
+    delay(1000);
     Serial.println();
     motorBehaviour(MV_CMD, DST_CMD);
   }
@@ -227,7 +236,8 @@ void motorBehaviour(String MV_CMD, int DST_CMD)
       M2.motorForward(255);
       Serial.println(getCoordinates());
     }
-    M1.motorStop(); M2.motorStop();
+    M1.motorStop();
+    M2.motorStop();
     Serial.println(getCoordinates());
   }
   else if (MV_CMD == "BCK")
@@ -238,7 +248,8 @@ void motorBehaviour(String MV_CMD, int DST_CMD)
       M1.motorBackward(255);
       M2.motorBackward(255);
     }
-    M1.motorStop(); M2.motorStop();
+    M1.motorStop();
+    M2.motorStop();
   }
   else if (MV_CMD == "RIT")
   {
@@ -248,7 +259,8 @@ void motorBehaviour(String MV_CMD, int DST_CMD)
       M1.motorForward(255);
       M2.motorBackward(255);
     }
-    M1.motorStop(); M2.motorStop();
+    M1.motorStop();
+    M2.motorStop();
   }
   else if (MV_CMD == "LFT")
   {
@@ -258,7 +270,8 @@ void motorBehaviour(String MV_CMD, int DST_CMD)
       M1.motorBackward(255);
       M2.motorForward(255);
     }
-    M1.motorStop(); M2.motorStop();
+    M1.motorStop();
+    M2.motorStop();
   }
   else
   {
