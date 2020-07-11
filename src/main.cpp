@@ -122,8 +122,16 @@ void IRAM_ATTR encoderRead2()
 
 int getCoordinates()
 {
-  int dist = M1.getDistance() * 0.5;
-  return dist;
+  int deltadistM1 = M1.getDistance();
+  int deltadistM2 = M1.getDistance();
+  if (deltadistM1 >= 0.1)
+  {
+    deltadistM1 = 0; deltadistM2 = 0;
+  } else
+  {
+    // not gonna work, deltadistM1 is not global so we need a global variable. 
+  }
+  
 }
 
 void setup_wifi()
@@ -150,15 +158,6 @@ void callback(char *topic, byte *message, unsigned int length)
   Serial.print("Message arrived on topic: ");
   Serial.print(topic);
   Serial.print(". Message: ");
-
-  /*
-  String messageTemp;
-  for (int i = 0; i < length; i++)
-  {
-    Serial.print((char)message[i]);
-    messageTemp += (char)message[i];
-  }
- */
 
   if (String(topic) == "ESP_CMD" && length == 10)
   {
